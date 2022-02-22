@@ -24,3 +24,6 @@
 * Dotenv (reading .env file)
 * Node Pg Migrate (handle database migration)
 * Nodemon (manage running project on NodeJS)
+
+**Before you run this project, i suggest to install nodeJs after that, you need to types npm run start:dev or npm run test:watch to look the project running well on your device**
+* [Node JS Download](https://nodejs.org/en/)
