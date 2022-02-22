@@ -37,9 +37,10 @@ class MessageHandler {
         if (receivedMessage.text === 'yes' || receivedMessage.text === 'yeah' || receivedMessage.text === 'yup') {
           this.userMessages.push(receivedMessage.text);
           await this._userMessagesService.addMessageToUser(this.userIdBySession, this.userMessages);
+          const daysLeft = this._calculateHowDaysTillNextBirthday(this.userBirthday);
 
           const response = {
-            'text': this._calculateHowDaysTillNextBirthday(this.userBirthday),
+            'text': `There are ${daysLeft} days left until your next birthday`,
           };
 
           this.session1 = false;
@@ -123,23 +124,28 @@ class MessageHandler {
   }
 
   _calculateHowDaysTillNextBirthday(date) {
-    const yearNow = moment().format('YYYY');
-    const dateNow = moment().format('YYYY-MM-DD');
-    const monthAndDayNow = moment().format('MM-DD');
+    const isDate = moment(date, 'YYYY-MM-DD', true).isValid();
+    if (isDate) {
+      const yearNow = moment().format('YYYY');
+      const dateNow = moment().format('YYYY-MM-DD');
+      const monthAndDayNow = moment().format('MM-DD');
 
-    const sliceYear = date.slice(5, 10);
-    let concateDate;
-    if (sliceYear > monthAndDayNow) {
-      concateDate = `${(Number(yearNow))}-${sliceYear}`;
+      const sliceYear = date.slice(5, 10);
+      let concateDate;
+      if (sliceYear > monthAndDayNow) {
+        concateDate = `${(Number(yearNow))}-${sliceYear}`;
+      } else {
+        concateDate = `${(Number(yearNow) + 1)}-${sliceYear}`;
+      }
+
+      const dateA = moment(dateNow);
+      const dateB = moment(concateDate);
+      const dateDifferences = dateB.diff(dateA, 'days');
+
+      return dateDifferences;
     } else {
-      concateDate = `${(Number(yearNow) + 1)}-${sliceYear}`;
+      return 0;
     }
-
-    const dateA = moment(dateNow);
-    const dateB = moment(concateDate);
-    const dateDifferences = dateB.diff(dateA, 'days');
-
-    return `There are ${dateDifferences} days left until your next birthday`;
   }
 }
 
